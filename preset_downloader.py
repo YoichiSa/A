@@ -10,39 +10,22 @@ for filename in os.listdir(preset_folder_path):
         with open(file_path, 'rb') as f:
             data = f.read()
 
+        if len(data) < 8:
+            print(f"Error: Invalid file format ({filename})")
+            continue
+
         metadata_length = struct.unpack('>i', data[:4])[0]
         metadata = data[4:4 + metadata_length]
 
         if len(data) < metadata_length + 8:
-            print(filename)
-            print(data.hex())
-            try:
-                with open(file_path, 'rb') as f:
-                  data = f.read()
+            print(f"Error: Invalid file format ({filename})")
+            continue
 
-            except:
-                print("Error: Failed to read the file")
-                print("Error: Invalid file format")
-            # exit()
-        else :
-            print("else")
-        if len(data) >= metadata_length + 8:
-            version, preset_name_length = struct.unpack('>ii', data[4 + metadata_length:4 + metadata_length + 8])
-            preset_name = struct.unpack('>{}s'.format(preset_name_length), data[4 + metadata_length + 8:4 + metadata_length + 8 + preset_name_length])[0].decode('utf-8')
-            if len(data) >= metadata_length + preset_name_length + 12:
-                preset_name = struct.unpack('>{}s'.format(preset_name_length), data[4 + metadata_length + 8:4 + metadata_length + 8 + preset_name_length])[0].decode('utf-8')
-            else:
-              print("Error: Invalid file format")
-        else:
-            print("Error: Invalid file format")
         version, preset_name_length = struct.unpack('>ii', data[4 + metadata_length:4 + metadata_length + 8])
-        preset_name = data[4 + metadata_length + 8:4 + metadata_length + 8 + preset_name_length].decode('utf-8')
+        preset_name = struct.unpack('>{}s'.format(preset_name_length), data[4 + metadata_length + 8:4 + metadata_length + 8 + preset_name_length])[0].decode('utf-8')
+
         parameters = {}
         offset = 4 + metadata_length + 8 + preset_name_length
-
-        
-
-
 
         while offset < len(data):
             param_name_length, data_type = struct.unpack('>i4s', data[offset:offset+8])
@@ -61,5 +44,7 @@ for filename in os.listdir(preset_folder_path):
                 offset += 4 + value_length
             else:
                 raise ValueError(f'Unsupported data type: {data_type}')
-            parameters[param_name] = value
-        parameters_list.append(parameters)
+
+                parameters[param_name] = value
+
+            print(parameters_list)
