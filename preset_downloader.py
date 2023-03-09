@@ -55,6 +55,7 @@ for filename in os.listdir(preset_folder_path):
             else:
                 raise ValueError(f'Unsupported data type: {data_type}')
 
-                parameters[param_name] = value
+            parameters[param_name] = value
 
             print(parameters_list)
+parameters_list.append(parameters)
