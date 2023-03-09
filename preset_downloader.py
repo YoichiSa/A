@@ -16,6 +16,11 @@ for filename in os.listdir(preset_folder_path):
 
         metadata_length = struct.unpack('>i', data[:4])[0]
         metadata = data[4:4 + metadata_length]
+        print(metadata)
+        if len(data) < 8:
+            print(f"Error: Invalid file format. File size is too small ({len(data)} bytes)")
+            continue
+
 
         if len(data) < metadata_length + 8:
             print(f"Error: Invalid file format ({filename})")
