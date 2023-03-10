@@ -23,7 +23,7 @@ for filename  in os.listdir(preset_folder_path):
         # バイトオーダーマークがない場合の判別方法
         with open(file_path, 'rb') as f:
             bytes = f.read()
-            print('hello')
+            
             if bytes[0] == 0x47:  # 特定のバイト値を見る
                 print('ファイル形式: MPEG-2 (バイトオーダーマークなし)')
             elif bytes[0] == 0x41:  # 他の特定のバイト値を見る
@@ -45,11 +45,14 @@ for filename  in os.listdir(preset_folder_path):
 
         parameters = {}
         offset = 4 + metadata_length + 8 + preset_name_length
-
+        print(offset,"offset")
         while offset < len(data):
                 param_name_length, data_type = struct.unpack('>i4s', data[offset:offset+8])
                 offset += 8
                 param_name = data[offset:offset+param_name_length].decode('utf-8')
+
+                print(param_name,"param_name")
+
                 offset += param_name_length
 
                 if data_type == b'f32 ':
